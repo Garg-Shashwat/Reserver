@@ -1,0 +1,21 @@
+DROP TABLE IF EXISTS users;
+
+CREATE TABLE users (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    username VARCHAR UNIQUE NOT NULL,
+    password VARCHAR NOT NULL,
+    email VARCHAR NOT NULL,
+    first_name VARCHAR NOT NULL,
+    last_name VARCHAR NOT NULL,
+    gender CHAR(1) NOT NULL,
+    age INTEGER NOT NULL
+);
+
+DROP TABLE IF EXISTS admins;
+
+CREATE TABLE admins (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    username VARCHAR UNIQUE NOT NULL,
+    password VARCHAR NOT NULL,
+    email VARCHAR NOT NULL
+);
