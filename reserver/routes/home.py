@@ -1,9 +1,11 @@
-from flask import session, redirect, render_template, url_for
+from flask import request, session, redirect, render_template, url_for
 
 from reserver import app
 
-@app.route('/')
+@app.route('/', methods=['GET','POST'])
 def home():
+    if request.method=='POST':
+        pass
     if 'username' in session:
         if session['is_admin']:
             return redirect(url_for('admin_home'))

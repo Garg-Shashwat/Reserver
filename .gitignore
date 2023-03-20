@@ -1,5 +1,7 @@
+__pycache__/
+*.py[cod]
+
 Reserver.egg-info/
-reserver/__pycache__/
+
 reserver/database.db
-reserver/database.db
-reserver/database.db
+database.db
