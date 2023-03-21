@@ -5,10 +5,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Registration</title>
-  <!-- Bootstrap CSS -->
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-  <!-- Custom CSS -->
-  <!-- <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}"> -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 
 <body>
@@ -22,11 +20,42 @@
           {% endif %}
           <div class="form-group">
             <label for="username">Username:</label>
-            <input type="text" class="form-control" id="username" name="username" placeholder="username" required>
+            <input type="text" class="form-control" id="username" name="username" placeholder="New Username" required>
+          </div>
+          <div class="two-col form-group">
+            <div class="col1">
+              <label for="firstname">First Name:</label>
+              <input type="text" class="form-control" id="firstname" name="firstname" placeholder="First Name" required>
+            </div>
+            <div class="col2">
+              <label for="lastname">Last Name:</label>
+              <input type="text" class="form-control" id="lastname" name="lastname" placeholder="Last Name" required>
+            </div>
+          </div>
+          <div class="two-col form-group">
+            <div class="col1">
+              <label for="age">Age</label>
+              <input type="number" class="form-control" id="age" name="age" placeholder="Your Age" required>
+            </div>
+            <div class="col2">
+              <label for="gender">Gender</label>
+              <select class="form-control" id="gender" name="gender">
+                <option value="">Select your Gender</option>
+                <option value="M">Male</option>
+                <option value="F">Female</option>
+                <option value="U">Unspecified</option>
+              </select>
+            </div>
           </div>
           <div class="form-group">
             <label for="password">Password:</label>
-            <input type="password" class="form-control" id="password" name="password" placeholder="password" required>
+            <input type="password" class="form-control" id="password" name="password" placeholder="New Password"
+              required>
+          </div>
+          <div class="form-group">
+            <label for="confirm-password">Confirm Password:</label>
+            <input type="password" class="form-control" id="confirm-password" name="confirm-password"
+              placeholder="Retype Password" required>
           </div>
           <button type="submit" class="btn btn-primary ">Register</button>
         </form>
@@ -36,8 +65,6 @@
       </div>
     </div>
   </div>
-  <!-- Bootstrap JS -->
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 </body>
 
 </html>

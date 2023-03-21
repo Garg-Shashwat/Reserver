@@ -9,11 +9,16 @@ class Query:
     def __init__(self, table: str, fields: dict, columns: list = []) -> None:
         self.table = table
         self.fields = fields
+        columns = list(map(columns, str.strip))
         self.select_columns = columns
+        print(columns)
+
+    def select_query():
+        query = f"SELECT"
 
 
 def init_db(init: bool = True):
-    schema = "init_schema.sql" if init else "update_schema.sql"
+    schema = "schema/init_schema.sql" if init else "schema/update_schema.sql"
     with app.app_context():
         db = get_db()
         with app.open_resource(schema, mode="r") as f:
