@@ -6,17 +6,32 @@ from reserver import app
 
 
 class Query:
-    def __init__(self, table: str, fields: dict, columns: list = []) -> None:
+    def __init__(self, table: str, fields: dict, columns: list = None) -> None:
         self.table = table
         self.fields = fields
-        self.select_columns = (
-            ", ".join(list(map(str.strip, columns))) if columns else "*"
-        )
-        print(self.select_columns)
+        self.columns = ", ".join(list(map(str.strip, columns))) if columns else "*"
 
-    def select_query(self):
-        query = f"SELECT {self.select_columns}"
-        print(query)
+    def select_query(self, doReturn=False):
+        query = f"SELECT {self.columns} FROM {self.table} WHERE {' = ? AND '.join(self.fields.keys())} = ?"
+        if doReturn:
+            return query, list(self.fields.values())
+        else:
+            return None
+
+    def insert_query(self, doReturn=False):
+        query = f"INSERT INTO {self.table} ({', '.join(self.fields.keys())}) VALUES ({', '.join(['?']*len(self.fields))})"
+        if doReturn:
+            return query, list(self.fields.values())
+        else:
+            return None
+
+    def call_select_query(self, one=False):
+        query, values = self.select_query(doReturn=True)
+        return query_db(query, values, one)
+
+    def call_insert_query(self):
+        query, values = self.insert_query(doReturn=True)
+        return query_db(query, values)
 
 
 def init_db(init: bool = True):

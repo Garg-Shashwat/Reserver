@@ -10,6 +10,7 @@ def register():
     if request.method == "POST":
         while True:
             try:
+                email = request.form["email"]
                 username = request.form["username"]
                 age = int(request.form["age"])
                 password = request.form["password"]
@@ -19,16 +20,25 @@ def register():
                 gender = request.form["gender"]
             except ValueError:
                 error = "Invalid Age: Value not a number"
+                break
             except Exception as e:
-                error = "Invalid Form Values: " + e
-            user = query_db(
-                "SELECT username FROM users WHERE username = ?",
-                [username],
-                one=True,
+                error = "Invalid Form Values: " + str(e)
+                break
+
+            db_email = Query("users", {"email": email}, ["email"]).call_select_query(
+                one=True
             )
+            if db_email:
+                error = "Email Already Registered"
+                break
+
+            user = Query(
+                "users", {"username": username}, ["username"]
+            ).call_select_query(one=True)
             if user:
                 error = "Username Already Taken"
                 break
+
             if age < 12 or age > 117:
                 error = "Invalid Age: Enter a valid number (12-117)"
                 break
@@ -36,7 +46,19 @@ def register():
                 error = "Password and confirm password did not match"
                 break
 
-            print("Success")
+            new_user = Query(
+                "users",
+                {
+                    "email": email,
+                    "username": username,
+                    "age": age,
+                    "password": password,
+                    "first_name": firstname,
+                    "last_name": lastname,
+                    "gender": gender,
+                },
+            ).call_insert_query()
+            print(new_user)
             break
 
     return render_template("register.html", error=error)
