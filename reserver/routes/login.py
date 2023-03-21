@@ -1,7 +1,7 @@
 from flask import request, session, redirect, render_template, url_for
 
 from reserver import app
-from reserver.db_methods import query_db
+from reserver.db_methods import query_db, Query
 
 
 @app.route("/register", methods=["GET", "POST"])

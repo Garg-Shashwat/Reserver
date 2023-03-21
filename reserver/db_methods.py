@@ -9,12 +9,14 @@ class Query:
     def __init__(self, table: str, fields: dict, columns: list = []) -> None:
         self.table = table
         self.fields = fields
-        columns = list(map(columns, str.strip))
-        self.select_columns = columns
-        print(columns)
+        self.select_columns = (
+            ", ".join(list(map(str.strip, columns))) if columns else "*"
+        )
+        print(self.select_columns)
 
-    def select_query():
-        query = f"SELECT"
+    def select_query(self):
+        query = f"SELECT {self.select_columns}"
+        print(query)
 
 
 def init_db(init: bool = True):
