@@ -50,11 +50,17 @@ def get_db():
     return db
 
 
-def query_db(query, args=(), one=False):
-    cur = get_db().execute(query, args)
-    rv = cur.fetchall()
-    cur.close()
-    return (rv[0] if rv else None) if one else rv
+def query_db(query, args=(), one=False, type="SELECT"):
+    db = get_db()
+    cur = db.execute(query, args)
+    if type == "SELECT":
+        rv = cur.fetchall()
+        return_val = (rv[0] if rv else None) if one else rv
+    elif type == "INSERT":
+        db.commit()
+        return_val = cur.rowcount
+    db.close()
+    return return_val
 
 
 @app.teardown_appcontext
