@@ -31,7 +31,7 @@ class Query:
 
     def call_insert_query(self):
         query, values = self.insert_query(doReturn=True)
-        return query_db(query, values)
+        return query_db(query, values, type="INSERT")
 
 
 def init_db(init: bool = True):
@@ -58,8 +58,8 @@ def query_db(query, args=(), one=False, type="SELECT"):
         return_val = (rv[0] if rv else None) if one else rv
     elif type == "INSERT":
         db.commit()
-        return_val = cur.rowcount
-    db.close()
+        return_val = "Success" if cur.rowcount else "Something went wrong"
+    cur.close()
     return return_val
 
 
