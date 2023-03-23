@@ -46,7 +46,7 @@ def register():
                 error = "Password and confirm password did not match"
                 break
 
-            new_user = Query(
+            status = Query(
                 "users",
                 {
                     "email": email,
@@ -58,8 +58,10 @@ def register():
                     "gender": gender,
                 },
             ).call_insert_query()
-            print(new_user)
-            break
+            if status == "Success":
+                return render_template("success.html")
+            else:
+                return render_template("register.html", error=status)
 
     return render_template("register.html", error=error)
 
@@ -70,13 +72,10 @@ def login():
     if request.method == "POST":
         username = request.form["username"]
         password = request.form["password"]
-        user = query_db(
-            "SELECT * FROM users WHERE username = ?",
-            [username],
-            one=True,
-        )
+        user = Query(
+            "users", {"username": username}, ["username", "password"]
+        ).call_select_query(one=True)
         if user:
-            print(user)
             if user["password"] == password:
                 session["username"] = user["username"]
                 session["is_admin"] = False
@@ -86,3 +85,24 @@ def login():
         else:
             error = "Username not found!"
     return render_template("login.html", error=error)
+
+
+@app.route("/admin/login", methods=["GET", "POST"])
+def admin_login():
+    error = False
+    if request.method == "POST":
+        username = request.form["username"]
+        password = request.form["password"]
+        user = Query(
+            "admins", {"username": username}, ["username", "password"]
+        ).call_select_query(one=True)
+        if user:
+            if user["password"] == password:
+                session["username"] = user["username"]
+                session["is_admin"] = True
+                return redirect(url_for("home"))
+            else:
+                error = "Password Mismatch"
+        else:
+            error = "Username not found!"
+    return render_template("login.html", error=error, mode="admin")
