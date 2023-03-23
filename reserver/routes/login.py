@@ -79,7 +79,7 @@ def login():
             if user["password"] == password:
                 session["username"] = user["username"]
                 session["is_admin"] = False
-                return redirect(url_for("home"))
+                return redirect(url_for("user_home"))
             else:
                 error = "Password Mismatch"
         else:
@@ -106,3 +106,10 @@ def admin_login():
         else:
             error = "Username not found!"
     return render_template("login.html", error=error, mode="admin")
+
+
+@app.route("/logout", methods=["GET"])
+def logout():
+    session.pop("username", None)
+    session.pop("is_admin", None)
+    return redirect(url_for("home"))
