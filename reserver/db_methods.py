@@ -6,15 +6,19 @@ from reserver import app
 
 
 class Query:
-    def __init__(self, table: str, fields: dict, columns: list = None) -> None:
+    def __init__(self, table: str, fields: dict = None, columns: list = None) -> None:
         self.table = table
         self.fields = fields
         self.columns = ", ".join(list(map(str.strip, columns))) if columns else "*"
 
     def select_query(self, doReturn=False):
-        query = f"SELECT {self.columns} FROM {self.table} WHERE {' = ? AND '.join(self.fields.keys())} = ?"
+        query = f"SELECT {self.columns} FROM {self.table}"
+        if self.fields:
+            query += f" WHERE {' = ? AND '.join(self.fields.keys())} = ?"
         if doReturn:
-            return query, list(self.fields.values())
+            if self.fields:
+                return [query, list(self.fields.values())]
+            return [query]
         else:
             return None
 
@@ -26,8 +30,10 @@ class Query:
             return None
 
     def call_select_query(self, one=False):
-        query, values = self.select_query(doReturn=True)
-        return query_db(query, values, one)
+        query_items = self.select_query(doReturn=True)
+        if len(query_items) == 1:
+            return query_db(query_items[0], one=one)
+        return query_db(query_items[0], query_items[1], one)
 
     def call_insert_query(self):
         query, values = self.insert_query(doReturn=True)
@@ -46,8 +52,11 @@ def init_db(init: bool = True):
 def get_db():
     db = getattr(g, "_database", None)
     if db is None:
-        db = g._database = sqlite3.connect(DATABASE)
+        db = g._database = sqlite3.connect(
+            DATABASE, detect_types=sqlite3.PARSE_DECLTYPES
+        )
     db.row_factory = sqlite3.Row
+    db.text_factory = lambda b: b.decode(errors="ignore")
     return db
 
 
@@ -59,7 +68,7 @@ def query_db(query, args=(), one=False, type="SELECT"):
         return_val = (rv[0] if rv else None) if one else rv
     elif type == "INSERT":
         db.commit()
-        return_val = "Success" if cur.rowcount else "Something went wrong"
+        return_val = "Success" if cur.rowcount else "ERR: Database not updated"
     cur.close()
     return return_val
 

@@ -61,7 +61,7 @@ def register():
             if status == "Success":
                 return render_template("success.html")
             else:
-                return render_template("register.html", error=status)
+                return render_template("failure.html", error=status)
 
     return render_template("register.html", error=error)
 
@@ -73,11 +73,11 @@ def login():
         username = request.form["username"]
         password = request.form["password"]
         user = Query(
-            "users", {"username": username}, ["username", "password"]
+            "users", {"username": username}, ["id", "password"]
         ).call_select_query(one=True)
         if user:
             if user["password"] == password:
-                session["username"] = user["username"]
+                session["id"] = user["id"]
                 session["is_admin"] = False
                 return redirect(url_for("user_home"))
             else:
@@ -94,11 +94,11 @@ def admin_login():
         username = request.form["username"]
         password = request.form["password"]
         user = Query(
-            "admins", {"username": username}, ["username", "password"]
+            "admins", {"username": username}, ["id", "password"]
         ).call_select_query(one=True)
         if user:
             if user["password"] == password:
-                session["username"] = user["username"]
+                session["userid"] = user["id"]
                 session["is_admin"] = True
                 return redirect(url_for("home"))
             else:
@@ -110,6 +110,6 @@ def admin_login():
 
 @app.route("/logout", methods=["GET"])
 def logout():
-    session.pop("username", None)
+    session.pop("userid", None)
     session.pop("is_admin", None)
     return redirect(url_for("home"))

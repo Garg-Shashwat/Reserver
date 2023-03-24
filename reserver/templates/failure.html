@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Registration Successful</title>
+    <title>Error</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
@@ -14,9 +14,9 @@
 <body>
     <div class="container">
         <div class="jumbotron">
-            <h1>Registration Successful</h1>
-            <p>Congratulations, your registration was successful!</p>
-            <a class="btn btn-primary btn-lg" href="login" role="button">Login</a>
+            <h1>Something went wrong!</h1>
+            <h3>ERR {{error.code}}: {{error.name}}</h3>
+            <p>{{error.description}}</p>
         </div>
     </div>
 </body>
