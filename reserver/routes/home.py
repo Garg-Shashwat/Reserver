@@ -5,7 +5,7 @@ from reserver import app
 
 @app.route("/", methods=["GET"])
 def home():
-    if "username" in session:
+    if "userid" in session:
         if session["is_admin"]:
             return redirect(url_for("admin_home"))
         else:
@@ -27,23 +27,23 @@ def about():
 def user_home():
     if request.method == "POST":
         pass
-    if "username" in session:
+    if "userid" in session and "is_admin" in session:
         if session["is_admin"]:
             return redirect(url_for("admin_home"))
         else:
-            return render_template("user_home.html", username=session["username"])
+            return render_template("user_home.html")
     else:
-        return redirect(url_for("login"))
+        return redirect(url_for("login"), error="Please Log-in to continue")
 
 
 @app.route("/admin/home", methods=["GET", "POST"])
 def admin_home():
     if request.method == "POST":
         pass
-    if "username" in session:
-        if session["is_admin"]:
-            return redirect(url_for("admin_home"))
+    if "userid" in session and "is_admin" in session:
+        if not session["is_admin"]:
+            return redirect(url_for("user_home"))
         else:
-            return render_template("user_home.html", username=session["username"])
+            return render_template("admin_home.html", name=session["username"])
     else:
-        return redirect(url_for("login"))
+        return redirect(url_for("login"), error="Please Log-in to continue")

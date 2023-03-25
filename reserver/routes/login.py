@@ -73,11 +73,12 @@ def login():
         username = request.form["username"]
         password = request.form["password"]
         user = Query(
-            "users", {"username": username}, ["id", "password"]
+            "users", {"username": username}, ["username", "id", "password"]
         ).call_select_query(one=True)
         if user:
             if user["password"] == password:
                 session["id"] = user["id"]
+                session["username"] = user["username"]
                 session["is_admin"] = False
                 return redirect(url_for("user_home"))
             else:
@@ -94,13 +95,14 @@ def admin_login():
         username = request.form["username"]
         password = request.form["password"]
         user = Query(
-            "admins", {"username": username}, ["id", "password"]
+            "admins", {"username": username}, ["id", "username", "password"]
         ).call_select_query(one=True)
         if user:
             if user["password"] == password:
                 session["userid"] = user["id"]
+                session["username"] = user["username"]
                 session["is_admin"] = True
-                return redirect(url_for("home"))
+                return redirect(url_for("admin_home"))
             else:
                 error = "Password Mismatch"
         else:
@@ -112,4 +114,5 @@ def admin_login():
 def logout():
     session.pop("userid", None)
     session.pop("is_admin", None)
+    session.pop("username", None)
     return redirect(url_for("home"))
