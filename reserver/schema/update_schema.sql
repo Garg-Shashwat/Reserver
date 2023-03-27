@@ -21,5 +21,6 @@ CREATE TABLE IF NOT EXISTS venues (
     name VARCHAR UNIQUE NOT NULL,
     multiplier INTEGER NOT NULL DEFAULT 100, 
     capacity INTEGER NOT NULL,
-    place VARCHAR NOT NULL
+    place VARCHAR NOT NULL,
+    location VARCHAR NOT NULL
 );

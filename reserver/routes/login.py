@@ -25,15 +25,15 @@ def register():
                 error = "Invalid Form Values: " + str(e)
                 break
 
-            db_email = Query("users", {"email": email}, ["email"]).call_select_query(
-                one=True
-            )
+            db_email = Query(
+                "users", check_attrs={"email": email}, other_attrs=["email"]
+            ).call_select_query(one=True)
             if db_email:
                 error = "Email Already Registered"
                 break
 
             user = Query(
-                "users", {"username": username}, ["username"]
+                "users", check_attrs={"username": username}, other_attrs=["username"]
             ).call_select_query(one=True)
             if user:
                 error = "Username Already Taken"
@@ -48,7 +48,7 @@ def register():
 
             status = Query(
                 "users",
-                {
+                other_attrs={
                     "email": email,
                     "username": username,
                     "age": age,
@@ -73,7 +73,9 @@ def login():
         username = request.form["username"]
         password = request.form["password"]
         user = Query(
-            "users", {"username": username}, ["username", "id", "password"]
+            "users",
+            check_attrs={"username": username},
+            other_attrs=["username", "id", "password"],
         ).call_select_query(one=True)
         if user:
             if user["password"] == password:
@@ -95,7 +97,9 @@ def admin_login():
         username = request.form["username"]
         password = request.form["password"]
         user = Query(
-            "admins", {"username": username}, ["id", "username", "password"]
+            "admins",
+            check_attrs={"username": username},
+            other_attrs=["id", "username", "password"],
         ).call_select_query(one=True)
         if user:
             if user["password"] == password:

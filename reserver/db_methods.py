@@ -6,38 +6,52 @@ from reserver import app
 
 
 class Query:
-    def __init__(self, table: str, fields: dict = None, columns: list = None) -> None:
+    def __init__(self, table: str, check_attrs: dict = None, other_attrs=None) -> None:
         self.table = table
-        self.fields = fields
-        self.columns = ", ".join(list(map(str.strip, columns))) if columns else "*"
+        self.check_attrs = check_attrs
+        self.attrs = other_attrs
 
-    def select_query(self, doReturn=False):
-        query = f"SELECT {self.columns} FROM {self.table}"
-        if self.fields:
-            query += f" WHERE {' = ? AND '.join(self.fields.keys())} = ?"
-        if doReturn:
-            if self.fields:
-                return [query, list(self.fields.values())]
-            return [query]
-        else:
-            return None
+    def select_query(self):
+        select_cols = ", ".join(list(map(str.strip, self.attrs))) if self.attrs else "*"
+        query = f"SELECT {select_cols} FROM {self.table}"
+        if self.check_attrs:
+            query += f" WHERE {' = ? AND '.join(self.check_attrs.keys())} = ?"
+            return [query, list(self.check_attrs.values())]
+        return [query]
 
-    def insert_query(self, doReturn=False):
-        query = f"INSERT INTO {self.table} ({', '.join(self.fields.keys())}) VALUES ({', '.join(['?']*len(self.fields))})"
-        if doReturn:
-            return query, list(self.fields.values())
-        else:
-            return None
+    def insert_query(self):
+        query = f"INSERT INTO {self.table} ({', '.join(self.attrs.keys())}) VALUES ({', '.join(['?']*len(self.attrs))})"
+        return query, list(self.attrs.values())
+
+    def update_query(self):
+        query = f"UPDATE {self.table} SET {' = ? , '.join(self.attrs.keys())} = ? WHERE {' = ? , '.join(self.check_attrs.keys())} = ?"
+        vals = self.attrs.values()
+        vals.append(self.check_attrs.values())
+        print(query, vals)
+        return query, vals
+
+    def delete_query(self):
+        query = f"DELETE FROM {self.table} WHERE {' = ? AND'.join(self.check_attrs.keys())} = ?"
+        print(query)
+        return query, list(self.check_attrs.values())
 
     def call_select_query(self, one=False):
-        query_items = self.select_query(doReturn=True)
+        query_items = self.select_query()
         if len(query_items) == 1:
             return query_db(query_items[0], one=one)
-        return query_db(query_items[0], query_items[1], one)
+        return query_db(query_items[0], query_items[1], one=one)
 
     def call_insert_query(self):
-        query, values = self.insert_query(doReturn=True)
+        query, values = self.insert_query()
         return query_db(query, values, type="INSERT")
+
+    def call_update_query(self):
+        query, values = self.update_query()
+        return query_db(query, values, type="UPDATE")
+
+    def call_delete_query(self):
+        query, values = self.update_query()
+        return query_db(query, values, type="DELETE")
 
 
 def init_db(init: bool = True):
@@ -66,8 +80,9 @@ def query_db(query, args=(), one=False, type="SELECT"):
     if type == "SELECT":
         rv = cur.fetchall()
         return_val = (rv[0] if rv else None) if one else rv
-    elif type == "INSERT":
+    else:
         db.commit()
+        print(cur.rowcount)
         return_val = "Success" if cur.rowcount else "ERR: Database not updated"
     cur.close()
     return return_val
