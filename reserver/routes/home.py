@@ -1,6 +1,7 @@
 from flask import request, session, redirect, render_template, url_for
 
 from reserver import app
+from reserver.routes.venue import get_venues
 
 
 @app.route("/", methods=["GET"])
@@ -44,6 +45,9 @@ def admin_home():
         if not session["is_admin"]:
             return redirect(url_for("user_home"))
         else:
-            return render_template("admin_home.html", name=session["username"])
+            records = get_venues()
+            return render_template(
+                "admin_home.html", name=session["username"], records=records
+            )
     else:
         return redirect(url_for("login"), error="Please Log-in to continue")
