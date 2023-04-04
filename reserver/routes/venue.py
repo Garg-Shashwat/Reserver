@@ -9,15 +9,16 @@ from reserver.error_handler import handle_exception
 def get_venues():
     if "is_admin" in session and session["is_admin"]:
         venues = Query("venues").call_select_query()
-        return jsonify(list(venues))
+        return jsonify(tuple(venues))
     abort(401)
 
 
 @app.route("/venues/<int:id>", methods=["GET"])
 def get_venue(id):
     if "is_admin" in session and session["is_admin"]:
-        venue = Query("venues", check_attrs={"id": id}).call_select_query(one=True)
-        return venue
+        venues = Query("venues", check_attrs={"id": id}).call_select_query(one=True)
+        results = [tuple(row) for row in venues]
+        return results
     abort(401)
 
 
