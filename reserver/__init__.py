@@ -8,6 +8,7 @@ import reserver.error_handler
 import reserver.routes.login
 import reserver.routes.home
 import reserver.routes.venue
+import reserver.routes.show
 
 if __name__ == "__main__":
     app.run()

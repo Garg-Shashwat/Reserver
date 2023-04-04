@@ -34,8 +34,32 @@
     <header class="jumbotron">
         <h1 class="display-4">Welcome {{name}}</h1>
     </header>
-    <div class="container">
+    <!-- <div class="container">
         <p>{{records}}</p>
+    </div> -->
+    <div class="container">
+        <div class="row md-5">
+            <div class="col">
+                <div class="card">
+                    <img class="card-img-top" src="{{ url_for('static', filename='temp.jpg') }}" alt="Venue Manager">
+                    <div class="card-body">
+                        <h5 class="card-title">Venue Management</h5>
+                        <p class="card-text">View, Create and Edit venues here.</p>
+                        <a href="{{url_for('logout')}}" class="btn btn-primary">Open Manager</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card">
+                    <img class="card-img-top" src="{{ url_for('static', filename='temp.jpg') }}" alt="Show Manager">
+                    <div class="card-body">
+                        <h5 class="card-title">Show Management</h5>
+                        <p class="card-text">View, Create and Edit shows here.</p>
+                        <a href="{{url_for('logout')}}" class="btn btn-primary">Open Manager</a>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </body>
 
