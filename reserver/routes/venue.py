@@ -9,7 +9,8 @@ from reserver.error_handler import handle_exception
 def get_venues():
     if "is_admin" in session and session["is_admin"]:
         venues = Query("venues").call_select_query()
-        return jsonify(tuple(venues))
+        results = [tuple(row) for row in venues]
+        return results
     abort(401)
 
 
@@ -17,8 +18,7 @@ def get_venues():
 def get_venue(id):
     if "is_admin" in session and session["is_admin"]:
         venues = Query("venues", check_attrs={"id": id}).call_select_query(one=True)
-        results = [tuple(row) for row in venues]
-        return results
+        return jsonify(tuple(venues))
     abort(401)
 
 
