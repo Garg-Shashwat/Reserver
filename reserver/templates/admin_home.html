@@ -72,11 +72,21 @@
         <div class="row">
             {% for venue in venue_list %}
             <div class="col-md-4">
-                <div class="card" style="height: 200px;">
+                <div class="card" style="height: 300px;">
                     <div class="card-body text-center" style="overflow-y: auto;">
                         <h5 class="card-title">{{ venue.name }}</h5>
-                        <p class="card-text">Capacity: {{ venue.capacity }}</p>
-                        <div class="btn-group d-block">
+                        <div class="row">
+                            {% for show in venue.show_names %}
+                            <div class="col-md-12">
+                                <div class="card">
+                                    <div class="card-body text-center">
+                                        <h4 class="card-title">{{ show }}</h4>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        <div class="btn-group d-block mt-3">
                             <button type="button" class="btn btn-sm btn-primary mb-2 rounded-pill">+</button><br>
                             <button type="button" class="btn btn-sm btn-warning w-25 d-inline-block rounded-pill">
                                 Edit

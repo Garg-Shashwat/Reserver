@@ -14,10 +14,10 @@ def get_venues():
         LEFT JOIN shows ON venues.id = shows.venue_id
         GROUP BY venues.id"""
         venues = query_db(query=query)
-        for venue in venues:
+        results = [dict(row) for row in venues]
+        for venue in results:
             if venue["show_names"]:
                 venue["show_names"] = venue["show_names"].split(",")
-        results = [dict(row) for row in venues]
         print(results)
         return results
     abort(401)
