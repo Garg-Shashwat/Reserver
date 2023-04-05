@@ -35,5 +35,7 @@ CREATE TABLE shows (
     rating INTEGER NOT NULL DEFAULT 0, 
     tags VARCHAR NOT NULL,
     price INTEGER NOT NULL,
-    timing VARCHAR NOT NULL
+    timing VARCHAR NOT NULL,
+    venue_id INTEGER NOT NULL,
+    FOREIGN KEY(venue_id) REFERENCES venues(id) 
 );

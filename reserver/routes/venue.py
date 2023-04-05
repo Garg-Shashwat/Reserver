@@ -2,14 +2,20 @@ from flask import jsonify, request, session, redirect, render_template, url_for,
 
 from reserver import app
 from reserver.db_methods import query_db, Query
-from reserver.error_handler import handle_exception
 
 
 @app.route("/venues", methods=["GET"])
 def get_venues():
     if "is_admin" in session and session["is_admin"]:
-        venues = Query("venues").call_select_query()
-        results = [tuple(row) for row in venues]
+        query = """
+        SELECT venues.id, venues.name,
+        GROUP_CONCAT(shows.name) as show_names
+        FROM venues
+        LEFT JOIN shows ON venues.id = shows.venue_id
+        GROUP BY venues.id"""
+        venues = query_db(query=query)
+        print(venues)
+        results = [dict(row) for row in venues]
         return results
     abort(401)
 
@@ -18,7 +24,16 @@ def get_venues():
 def get_venue(id):
     if "is_admin" in session and session["is_admin"]:
         venues = Query("venues", check_attrs={"id": id}).call_select_query(one=True)
-        return jsonify(tuple(venues))
+        return jsonify(dict(venues))
+    abort(401)
+
+
+@app.route("/venues/<int:id>/shows", methods=["GET"])
+def get_venue_shows(id):
+    if "is_admin" in session and session["is_admin"]:
+        shows = Query("shows", check_attrs={"venue_id": id}).call_select_query()
+        results = [dict(row) for row in shows]
+        return results
     abort(401)
 
 
@@ -104,9 +119,6 @@ def edit_venue(id):
 @app.route("/venues/<int:id>", methods=["DELETE"])
 def delete_venue(id):
     if "is_admin" in session and session["is_admin"]:
-        status = Query("venues", check_attrs={"id": id}).call_delete_query(one=True)
-        if status == "Success":
-            return render_template("success.html")
-        else:
-            return render_template("failure.html", error=status)
+        status = Query("venues", check_attrs={"id": id}).call_delete_query()
+        return status
     abort(401)

@@ -1,4 +1,4 @@
-from flask import json, render_template, abort
+from flask import render_template, abort
 from werkzeug.exceptions import HTTPException
 
 from reserver import app

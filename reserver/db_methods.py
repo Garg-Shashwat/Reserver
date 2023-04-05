@@ -32,7 +32,6 @@ class Query:
 
     def delete_query(self):
         query = f"DELETE FROM {self.table} WHERE {' = ? AND'.join(self.check_attrs.keys())} = ?"
-        print(query)
         return query, list(self.check_attrs.values())
 
     def call_select_query(self, one=False):
@@ -50,7 +49,7 @@ class Query:
         return query_db(query, values, type="UPDATE")
 
     def call_delete_query(self):
-        query, values = self.update_query()
+        query, values = self.delete_query()
         return query_db(query, values, type="DELETE")
 
 

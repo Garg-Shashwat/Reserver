@@ -5,10 +5,11 @@ app.secret_key = "Noman"
 
 import reserver.db_methods
 import reserver.error_handler
-import reserver.routes.login
+import reserver.routes.admin
 import reserver.routes.home
-import reserver.routes.venue
+import reserver.routes.login
 import reserver.routes.show
+import reserver.routes.venue
 
 if __name__ == "__main__":
     app.run()

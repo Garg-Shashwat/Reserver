@@ -1,15 +1,14 @@
 from flask import jsonify, request, session, redirect, render_template, url_for, abort
 
 from reserver import app
-from reserver.db_methods import query_db, Query
-from reserver.error_handler import handle_exception
+from reserver.db_methods import Query
 
 
 @app.route("/shows", methods=["GET"])
 def get_shows():
     if "is_admin" in session and session["is_admin"]:
         shows = Query("shows").call_select_query()
-        results = [tuple(row) for row in shows]
+        results = [dict(row) for row in shows]
         return results
     abort(401)
 
@@ -18,7 +17,7 @@ def get_shows():
 def get_show(id):
     if "is_admin" in session and session["is_admin"]:
         show = Query("shows", check_attrs={"id": id}).call_select_query(one=True)
-        return jsonify(tuple(show))
+        return jsonify(dict(show))
     abort(401)
 
 
@@ -98,9 +97,6 @@ def edit_show(id):
 @app.route("/shows/<int:id>", methods=["DELETE"])
 def delete_show(id):
     if "is_admin" in session and session["is_admin"]:
-        status = Query("shows", check_attrs={"id": id}).call_delete_query(one=True)
-        if status == "Success":
-            return render_template("success.html")
-        else:
-            return render_template("failure.html", error=status)
+        status = Query("shows", check_attrs={"id": id}).call_delete_query()
+        return status
     abort(401)
