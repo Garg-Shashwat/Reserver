@@ -14,8 +14,8 @@ def get_venues():
         LEFT JOIN shows ON venues.id = shows.venue_id
         GROUP BY venues.id"""
         venues = query_db(query=query)
-        print(venues)
         results = [dict(row) for row in venues]
+        print(results)
         return results
     abort(401)
 
