@@ -45,9 +45,9 @@ def admin_home():
         if not session["is_admin"]:
             return redirect(url_for("user_home"))
         else:
-            venues = get_venues()
+            records = get_venues()
             return render_template(
-                "admin_home.html", name=session["username"], venue_list=venues
+                "admin_home.html", name=session["username"], records=records
             )
     else:
         return redirect(url_for("login"), error="Please Log-in to continue")

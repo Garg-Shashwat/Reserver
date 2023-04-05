@@ -23,7 +23,7 @@ def get_show(id):
 
 
 @app.route("/shows", methods=["POST"])
-def create_show():
+def create_venue():
     if "is_admin" in session and session["is_admin"]:
         while True:
             error = False
