@@ -6,11 +6,13 @@ from reserver.db_methods import query_db, Query
 
 class Venue:
     def __init__(self, capacity, place, location, name=None, id=None) -> None:
-        self.name = name
+        if name:
+            self.name = name
         self.capacity = capacity
         self.place = place
         self.location = location
-        self.id = id
+        if id:
+            self.id = id
 
 
 @app.route("/venues", methods=["GET"])
@@ -25,8 +27,9 @@ def get_venues():
         venues = query_db(query=query)
         results = [dict(row) for row in venues]
         for venue in results:
-            if venue["show_names"]:
-                venue["show_names"] = venue["show_names"].split(",")
+            venue["show_names"] = (
+                venue["show_names"].split(",") if venue["show_names"] else []
+            )
         return results
     abort(401)
 
@@ -83,7 +86,6 @@ def edit_venue(venue: Venue):
         status = Query(
             "venues",
             other_attrs={
-                "name": venue.name,
                 "capacity": venue.capacity,
                 "place": venue.place,
                 "location": venue.location,

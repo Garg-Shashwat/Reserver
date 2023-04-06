@@ -25,9 +25,8 @@ class Query:
 
     def update_query(self):
         query = f"UPDATE {self.table} SET {' = ? , '.join(self.attrs.keys())} = ? WHERE {' = ? , '.join(self.check_attrs.keys())} = ?"
-        vals = self.attrs.values()
-        vals.append(self.check_attrs.values())
-        print(query, vals)
+        vals = list(self.attrs.values())
+        vals.extend(list(self.check_attrs.values()))
         return query, vals
 
     def delete_query(self):
@@ -81,7 +80,6 @@ def query_db(query, args=(), one=False, type="SELECT"):
         return_val = (rv[0] if rv else None) if one else rv
     else:
         db.commit()
-        print(cur.rowcount)
         return_val = "Success" if cur.rowcount else "ERR: Database not updated"
     cur.close()
     return return_val

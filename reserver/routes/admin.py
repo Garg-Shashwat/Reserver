@@ -73,6 +73,7 @@ def admin_manage_venue():
                     break
                 if type == "Create":
                     venue = Venue(capacity, place, location, name=name)
+                    status = create_venue(venue)
                 elif type == "Edit":
                     venue = Venue(capacity, place, location, id=id)
                     status = edit_venue(venue)

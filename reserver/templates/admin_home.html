@@ -82,7 +82,7 @@
                                 <div class="card" style="height: 175px; width: auto">
                                     <h6 class="mt-2">Shows</h6>
                                     <div class="card-body text-center" style="overflow-y: auto;">
-                                        {% for show in venue.show_names %}
+                                        {% for show in venue.show_names|default([]) %}
                                         <div class="card mb-1" style="height: 30px;">
                                             <h7>{{ show }}</h7>
                                         </div>
