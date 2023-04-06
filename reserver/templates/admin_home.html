@@ -82,9 +82,15 @@
                                 <div class="card" style="height: 175px; width: auto">
                                     <h6 class="mt-2">Shows</h6>
                                     <div class="card-body text-center" style="overflow-y: auto;">
-                                        {% for show in venue.show_names|default([]) %}
-                                        <div class="card mb-1" style="height: 30px;">
-                                            <h7>{{ show }}</h7>
+                                        {% for i in range(venue.show_names|length) %}
+                                        <div class="card mb-1" style="height: 60px;">
+                                            <h7>{{ venue.show_names[i] }}</h7>
+                                            <a href="{{ url_for('admin_manage_show', s_id=venue.show_ids[i]) }}">
+                                                <button type="button"
+                                                    class="btn btn-sm btn-warning d-inline-block rounded-pill">
+                                                    Actions
+                                                </button>
+                                            </a>
                                         </div>
                                         {% endfor %}
                                     </div>
@@ -92,7 +98,7 @@
                             </div>
                         </div>
                         <div class="btn-group d-block mt-2 text-center">
-                            <a>
+                            <a href="{{ url_for('admin_manage_show', v_id=venue.id) }}">
                                 <button type="button" class="btn btn-sm btn-primary mb-2 rounded-pill">+</button><br>
                             </a>
                             <a href="{{ url_for('admin_manage_venue', v_id=venue.id) }}">

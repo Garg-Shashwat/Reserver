@@ -4,6 +4,19 @@ from reserver import app
 from reserver.db_methods import Query
 
 
+class Show:
+    def __init__(self, rating, tags, price, timing, name, v_id=None, id=None) -> None:
+        self.name = name
+        self.rating = rating
+        self.tags = tags
+        self.price = price
+        self.timing = timing
+        if v_id:
+            self.v_id = v_id
+        if id:
+            self.id = id
+
+
 @app.route("/shows", methods=["GET"])
 def get_shows():
     if "is_admin" in session and session["is_admin"]:
@@ -17,80 +30,49 @@ def get_shows():
 def get_show(id):
     if "is_admin" in session and session["is_admin"]:
         show = Query("shows", check_attrs={"id": id}).call_select_query(one=True)
-        return jsonify(dict(show))
+        return dict(show)
     abort(401)
 
 
-@app.route("/shows", methods=["POST"])
-def create_show():
+def create_show(show: Show):
     if "is_admin" in session and session["is_admin"]:
-        while True:
-            error = False
-            try:
-                name = request.form["name"]
-                rating = int(request.form["rating"])
-                tags = request.form["tags"]
-                price = int(request.form["price"])
-                timing = request.form["timing"]
-            except ValueError:
-                error = "Invalid Values: Value not a number"
-                break
-            except Exception as e:
-                error = "Invalid Form Values: " + str(e)
-                break
-            status = Query(
-                "shows",
-                other_attrs={
-                    "name": name,
-                    "rating": rating,
-                    "tags": tags,
-                    "price": price,
-                    "timing": timing,
-                },
-            ).call_insert_query()
-            if status == "Success":
-                return render_template("success.html")
-            else:
-                return render_template("failure.html", error=status)
-
+        status = Query(
+            "shows",
+            other_attrs={
+                "name": show.name,
+                "rating": show.rating,
+                "tags": show.tags,
+                "price": show.price,
+                "timing": show.timing,
+                "venue_id": show.v_id,
+            },
+        ).call_insert_query()
+        return status
     abort(401)
 
 
-@app.route("/shows/<int:id>", methods=["PUT"])
-def edit_show(id):
+def edit_show(show: Show):
     if "is_admin" in session and session["is_admin"]:
-        while True:
-            error = False
-            try:
-                name = request.form["name"]
-                rating = int(request.form["rating"])
-                tags = request.form["tags"]
-                price = int(request.form["price"])
-                timing = request.form["timing"]
-            except ValueError:
-                error = "Invalid Values: Value not a number"
-                break
-            except Exception as e:
-                error = "Invalid Form Values: " + str(e)
-                break
-            show = Query("shows", check_attrs={"id": id}).call_select_query(one=True)
-            if not show:
-                abort(400)
-            status = Query(
-                "shows",
-                other_attrs={
-                    "name": name,
-                    "rating": rating,
-                    "tags": tags,
-                    "price": price,
-                    "timing": timing,
-                },
-                check_attrs={"id": id},
-            ).call_update_query()
-            if status == "Success":
-                return render_template("success.html")
-            else:
-                return render_template("failure.html", error=status)
+        if not show.id:
+            abort(400)
+
+        check_show = Query("shows", check_attrs={"id": show.id}).call_select_query(
+            one=True
+        )
+        if not check_show:
+            abort(400)
+        status = Query(
+            "shows",
+            other_attrs={
+                "name": show.name,
+                "rating": show.rating,
+                "tags": show.tags,
+                "price": show.price,
+                "timing": show.timing,
+            },
+            check_attrs={"id": show.id},
+        ).call_update_query()
+        return status
     abort(401)
 
 

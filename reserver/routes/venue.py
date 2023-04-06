@@ -20,7 +20,8 @@ def get_venues():
     if "is_admin" in session and session["is_admin"]:
         query = """
         SELECT venues.id, venues.name,
-        GROUP_CONCAT(shows.name) as show_names
+        GROUP_CONCAT(shows.name) as show_names,
+        GROUP_CONCAT(shows.id) as show_ids
         FROM venues
         LEFT JOIN shows ON venues.id = shows.venue_id
         GROUP BY venues.id"""
@@ -29,6 +30,9 @@ def get_venues():
         for venue in results:
             venue["show_names"] = (
                 venue["show_names"].split(",") if venue["show_names"] else []
+            )
+            venue["show_ids"] = (
+                venue["show_ids"].split(",") if venue["show_ids"] else []
             )
         return results
     abort(401)
@@ -96,6 +100,7 @@ def edit_venue(venue: Venue):
     abort(401)
 
 
+@app.route("/venues/<int:id>", methods=["DELETE"])
 def delete_venue(id):
     if "is_admin" in session and session["is_admin"]:
         status = Query("venues", check_attrs={"id": id}).call_delete_query()
