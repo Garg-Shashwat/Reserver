@@ -67,30 +67,39 @@
     </div> -->
     <div class="container">
         <div class="d-flex justify-content-center mb-4">
-            <button type="button" class="btn btn-lg btn-primary rounded-pill">+</button>
+            <a href="{{ url_for('admin_manage_venue') }}">
+                <button type="button" class="btn btn-lg btn-primary rounded-pill">+</button>
+            </a>
         </div>
         <div class="row">
             {% for venue in venue_list %}
             <div class="col-md-4">
-                <div class="card" style="height: 300px;">
-                    <div class="card-body text-center" style="overflow-y: auto;">
+                <div class="card" style="height: 325px;">
+                    <div class="card-body text-center">
                         <h5 class="card-title">{{ venue.name }}</h5>
                         <div class="row">
-                            {% for show in venue.show_names %}
                             <div class="col-md-12">
-                                <div class="card">
-                                    <div class="card-body text-center">
-                                        <h4 class="card-title">{{ show }}</h4>
+                                <div class="card" style="height: 175px; width: auto">
+                                    <h6 class="mt-2">Shows</h6>
+                                    <div class="card-body text-center" style="overflow-y: auto;">
+                                        {% for show in venue.show_names %}
+                                        <div class="card mb-1" style="height: 30px;">
+                                            <h7>{{ show }}</h7>
+                                        </div>
+                                        {% endfor %}
                                     </div>
                                 </div>
                             </div>
-                            {% endfor %}
                         </div>
-                        <div class="btn-group d-block mt-3">
-                            <button type="button" class="btn btn-sm btn-primary mb-2 rounded-pill">+</button><br>
-                            <button type="button" class="btn btn-sm btn-warning w-25 d-inline-block rounded-pill">
-                                Edit
-                            </button>
+                        <div class="btn-group d-block mt-2 text-center">
+                            <a>
+                                <button type="button" class="btn btn-sm btn-primary mb-2 rounded-pill">+</button><br>
+                            </a>
+                            <a href="{{ url_for('admin_manage_venue', v_id=venue.id) }}">
+                                <button type="button" class="btn btn-sm btn-warning w-25 d-inline-block rounded-pill">
+                                    Edit
+                                </button>
+                            </a>
                             <a href="{{ url_for('admin_delete_venue', id=venue.id) }}">
                                 <button type="button"
                                     class="btn btn-sm btn-danger w-25 d-inline-block ml-2 rounded-pill">
