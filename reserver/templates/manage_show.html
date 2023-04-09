@@ -33,7 +33,10 @@
     <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
       <ul class="navbar-nav">
         <li class="nav-item">
-          <a class="nav-link">{{name}}'s Dashboard</a>
+          <a class="nav-link" href="{{url_for('admin_home')}}">{{name}}'s Dashboard</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{{url_for('admin_summary')}}">Summary</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="{{url_for('logout')}}">Log Out</a>
