@@ -17,33 +17,40 @@ class Venue:
 
 @app.route("/venues", methods=["GET"])
 def get_venues():
-    if "is_admin" in session and session["is_admin"]:
-        query = """
-        SELECT venues.id, venues.name,
-        GROUP_CONCAT(shows.name) as show_names,
-        GROUP_CONCAT(shows.id) as show_ids
-        FROM venues
-        LEFT JOIN shows ON venues.id = shows.venue_id
-        GROUP BY venues.id"""
-        venues = query_db(query=query)
-        results = [dict(row) for row in venues]
-        for venue in results:
-            venue["show_names"] = (
-                venue["show_names"].split(",") if venue["show_names"] else []
-            )
-            venue["show_ids"] = (
-                venue["show_ids"].split(",") if venue["show_ids"] else []
-            )
-        return results
-    abort(401)
+    q = request.args.get("query")
+    args = []
+    query = """
+    SELECT venues.id, venues.name, venues.capacity,
+    GROUP_CONCAT(shows.name) as show_names,
+    GROUP_CONCAT(shows.id) as show_ids,
+    GROUP_CONCAT(shows.booked_seats) as show_seats
+    FROM venues
+    LEFT JOIN shows ON venues.id = shows.venue_id"""
+    if q:
+        query += " WHERE LOWER(venues.name) LIKE LOWER(?)"
+        args.append("%" + q + "%")
+    query += " GROUP BY venues.id"
+    venues = query_db(query=query, args=args)
+    results = [dict(row) for row in venues]
+    for venue in results:
+        venue["show_names"] = (
+            venue["show_names"].split(",") if venue["show_names"] else []
+        )
+        venue["show_ids"] = (
+            list(map(int, venue["show_ids"].split(","))) if venue["show_ids"] else []
+        )
+        venue["show_seats"] = (
+            list(map(int, venue["show_seats"].split(",")))
+            if venue["show_seats"]
+            else []
+        )
+    return results
 
 
 @app.route("/venues/<int:id>", methods=["GET"])
 def get_venue(id):
-    if "is_admin" in session and session["is_admin"]:
-        venues = Query("venues", check_attrs={"id": id}).call_select_query(one=True)
-        return dict(venues)
-    abort(401)
+    venues = Query("venues", check_attrs={"id": id}).call_select_query(one=True)
+    return dict(venues)
 
 
 @app.route("/venues/<int:id>/shows", methods=["GET"])

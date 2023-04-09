@@ -79,7 +79,7 @@ def login():
         ).call_select_query(one=True)
         if user:
             if user["password"] == password:
-                session["id"] = user["id"]
+                session["userid"] = user["id"]
                 session["username"] = user["username"]
                 session["is_admin"] = False
                 return redirect(url_for("user_home"))

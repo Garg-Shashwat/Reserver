@@ -21,16 +21,3 @@ def contact():
 @app.route("/about", methods=["GET"])
 def about():
     return render_template("about.html")
-
-
-@app.route("/user/home", methods=["GET", "POST"])
-def user_home():
-    if request.method == "POST":
-        pass
-    if "userid" in session and "is_admin" in session:
-        if session["is_admin"]:
-            return redirect(url_for("admin_home"))
-        else:
-            return render_template("user_home.html")
-    else:
-        return redirect(url_for("login"), error="Please Log-in to continue")

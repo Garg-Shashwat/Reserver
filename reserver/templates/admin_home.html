@@ -41,30 +41,6 @@
     <header class="jumbotron">
         <h1 class="display-4">Welcome {{name}}</h1>
     </header>
-    <!-- <div class="container">
-        <div class="row md-5">
-            <div class="col">
-                <div class="card">
-                    <img class="card-img-top" src="{{ url_for('static', filename='temp.jpg') }}" alt="Venue Manager">
-                    <div class="card-body">
-                        <h5 class="card-title">Venue Management</h5>
-                        <p class="card-text">View, Create and Edit venues here.</p>
-                        <a href="{{url_for('logout')}}" class="btn btn-primary">Open Manager</a>
-                    </div>
-                </div>
-            </div>
-            <div class="col">
-                <div class="card">
-                    <img class="card-img-top" src="{{ url_for('static', filename='temp.jpg') }}" alt="Show Manager">
-                    <div class="card-body">
-                        <h5 class="card-title">Show Management</h5>
-                        <p class="card-text">View, Create and Edit shows here.</p>
-                        <a href="{{url_for('logout')}}" class="btn btn-primary">Open Manager</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div> -->
     <div class="container">
         <div class="d-flex justify-content-center mb-4">
             <a href="{{ url_for('admin_manage_venue') }}">
@@ -74,17 +50,19 @@
         <div class="row">
             {% for venue in venue_list %}
             <div class="col-md-4">
-                <div class="card" style="height: 325px;">
+                <div class="card" style="height: 375px;">
                     <div class="card-body text-center">
                         <h5 class="card-title">{{ venue.name }}</h5>
+                        <p>Capacity: {{venue.capacity}}</p>
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="card" style="height: 175px; width: auto">
                                     <h6 class="mt-2">Shows</h6>
                                     <div class="card-body text-center" style="overflow-y: auto;">
                                         {% for i in range(venue.show_names|length) %}
-                                        <div class="card mb-1" style="height: 60px;">
+                                        <div class="card mb-1" style="height: 100px;">
                                             <h7>{{ venue.show_names[i] }}</h7>
+                                            <p>Booked: {{ venue.show_seats[i] }}</p>
                                             <a href="{{ url_for('admin_manage_show', s_id=venue.show_ids[i]) }}">
                                                 <button type="button"
                                                     class="btn btn-sm btn-warning d-inline-block rounded-pill">

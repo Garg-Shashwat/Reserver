@@ -5,7 +5,9 @@ from reserver.db_methods import Query
 
 
 class Show:
-    def __init__(self, rating, tags, price, timing, name, v_id=None, id=None) -> None:
+    def __init__(
+        self, rating, tags, price, timing, name, booked_seats=0, v_id=None, id=None
+    ) -> None:
         self.name = name
         self.rating = rating
         self.tags = tags
@@ -15,23 +17,20 @@ class Show:
             self.v_id = v_id
         if id:
             self.id = id
+        self.booked_seats = booked_seats
 
 
 @app.route("/shows", methods=["GET"])
 def get_shows():
-    if "is_admin" in session and session["is_admin"]:
-        shows = Query("shows").call_select_query()
-        results = [dict(row) for row in shows]
-        return results
-    abort(401)
+    shows = Query("shows").call_select_query()
+    results = [dict(row) for row in shows]
+    return results
 
 
 @app.route("/shows/<int:id>", methods=["GET"])
 def get_show(id):
-    if "is_admin" in session and session["is_admin"]:
-        show = Query("shows", check_attrs={"id": id}).call_select_query(one=True)
-        return dict(show)
-    abort(401)
+    show = Query("shows", check_attrs={"id": id}).call_select_query(one=True)
+    return dict(show)
 
 
 def create_show(show: Show):
@@ -45,6 +44,7 @@ def create_show(show: Show):
                 "price": show.price,
                 "timing": show.timing,
                 "venue_id": show.v_id,
+                "booked_seats": show.booked_seats,
             },
         ).call_insert_query()
         return status
@@ -69,6 +69,7 @@ def edit_show(show: Show):
                 "tags": show.tags,
                 "price": show.price,
                 "timing": show.timing,
+                "booked_seats": show.booked_seats,
             },
             check_attrs={"id": show.id},
         ).call_update_query()

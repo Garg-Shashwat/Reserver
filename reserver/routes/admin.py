@@ -25,7 +25,7 @@ def admin_home():
                 venue_list=venues,
             )
     else:
-        return redirect(url_for("login"), error="Please Log-in to continue")
+        return render_template("login.html", error="Please Log-in to continue")
 
 
 @app.route("/admin/venue/delete/<int:id>", methods=["GET"])
@@ -82,7 +82,9 @@ def admin_manage_venue():
                     error = status
                 break
             if error:
-                return render_template("failure.html", error=error)
+                return render_template(
+                    "manage_venue.html", name=session["username"], error=error
+                )
             else:
                 return redirect(url_for("admin_home"))
     else:
@@ -118,6 +120,8 @@ def admin_manage_show():
                 )
         elif request.method == "POST":
             error = False
+            id = None
+            v_id = None
             while True:
                 try:
                     type = request.form["type"]
@@ -136,12 +140,16 @@ def admin_manage_show():
                 except Exception as e:
                     error = "Invalid Form Values: " + str(e)
                     break
+                if rating > 100 or rating < 0:
+                    error = "Invalid Rating: Try Values between 0-100"
+                    break
+                if price <= 0:
+                    error = "Invalid Price: Not a whole number"
+                    break
                 if type == "Create":
-                    print(v_id)
-                    show = Show.Show(rating, tags, price, timing, name, v_id)
+                    show = Show.Show(rating, tags, price, timing, name, v_id=v_id)
                     status = Show.create_show(show)
                 elif type == "Edit":
-                    print(id)
                     show = Show.Show(rating, tags, price, timing, name, id=id)
                     status = Show.edit_show(show)
                 else:
@@ -150,7 +158,24 @@ def admin_manage_show():
                     error = status
                 break
             if error:
-                return render_template("failure.html", error=error)
+                if id:
+                    show = Show.get_show(id)
+                    return render_template(
+                        "manage_show.html",
+                        name=session["username"],
+                        show=show,
+                        error=error,
+                    )
+                elif v_id:
+                    return render_template(
+                        "manage_show.html",
+                        name=session["username"],
+                        v_id=v_id,
+                        error=error,
+                    )
+                else:
+                    abort(400)
+
             else:
                 return redirect(url_for("admin_home"))
     else:

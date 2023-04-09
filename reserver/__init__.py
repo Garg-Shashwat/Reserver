@@ -10,6 +10,7 @@ import reserver.routes.home
 import reserver.routes.login
 import reserver.routes.show
 import reserver.routes.venue
+import reserver.routes.user
 
 if __name__ == "__main__":
     app.run()

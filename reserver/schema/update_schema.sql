@@ -33,5 +33,17 @@ CREATE TABLE IF NOT EXISTS shows (
     price INTEGER NOT NULL,
     timing VARCHAR NOT NULL,
     venue_id INTEGER NOT NULL,
+    booked_seats INTEGER NOT NULL DEFAULT 0,
     FOREIGN KEY(venue_id) REFERENCES venues(id) 
+);
+
+CREATE TABLE IF NOT EXISTS bookings (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    show_id INTEGER NOT NULL,
+    rating INTEGER, 
+    user_id INTEGER NOT NULL,
+    price INTEGER NOT NULL,
+    booked_seats INTEGER NOT NULL DEFAULT 0,
+    FOREIGN KEY (show_id) REFERENCES shows (id),
+    FOREIGN KEY (user_id) REFERENCES users (id)
 );
