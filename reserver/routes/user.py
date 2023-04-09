@@ -109,13 +109,14 @@ def show_bookings():
             if request.method == "GET":
                 userid = session["userid"]
                 results = Query(
-                    "bookings", check_attrs={"id": userid}
+                    "bookings", check_attrs={"user_id": userid}
                 ).call_select_query()
                 bookings = [dict(row) for row in results]
                 print(bookings)
             return render_template(
                 "user_bookings.html",
                 name=session["username"],
+                bookings=bookings,
             )
     else:
         return render_template("login.html", error="Please Log-in to continue")
