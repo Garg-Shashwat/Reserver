@@ -85,38 +85,89 @@ def book_show():
                     "booked_seats": booked_seats,
                 },
             ).call_insert_query()
-            show_result = Query(
-                "shows",
-                check_attrs={"id": id},
-                other_attrs={"booked_seats": show["booked_seats"] + booked_seats},
-            ).call_update_query()
-            print(result)
-            print(show_result)
             if result == "Success":
-                return render_template("booking_success.html", name=session["username"])
-            else:
-                abort(500)
+                show_result = Query(
+                    "shows",
+                    check_attrs={"id": id},
+                    other_attrs={"booked_seats": show["booked_seats"] + booked_seats},
+                ).call_update_query()
+                if show_result == "Success":
+                    return render_template(
+                        "booking_success.html", name=session["username"]
+                    )
+
+            abort(500)
     else:
         return render_template("login.html", error="Please Log-in to continue")
 
 
-@app.route("/user/bookings", methods=["GET", "POST"])
+@app.route("/user/bookings", methods=["GET"])
 def show_bookings():
     if "userid" in session and "is_admin" in session:
+        if session["is_admin"]:
+            abort(400)
+        userid = session["userid"]
+        results = Query("bookings", check_attrs={"user_id": userid}).call_select_query()
+        bookings = [dict(row) for row in results]
+        return render_template(
+            "user_bookings.html",
+            name=session["username"],
+            bookings=bookings,
+        )
+    else:
+        return render_template("login.html", error="Please Log-in to continue")
+
+
+@app.route("/user/booking/<int:id>/rate", methods=["GET", "POST"])
+def rate_show(id):
+    if "userid" in session and "is_admin" in session:
+        if session["is_admin"]:
+            abort(400)
+        userid = session["userid"]
+        results = Query("bookings", check_attrs={"id": id}).call_select_query(one=True)
+        booking = dict(results)
+
+        if booking["user_id"] != userid:
+            abort(400)
+
         if request.method == "GET":
-            if session["is_admin"]:
-                abort(400)
-            if request.method == "GET":
-                userid = session["userid"]
-                results = Query(
-                    "bookings", check_attrs={"user_id": userid}
-                ).call_select_query()
-                bookings = [dict(row) for row in results]
-                print(bookings)
             return render_template(
-                "user_bookings.html",
+                "rate_show.html",
                 name=session["username"],
-                bookings=bookings,
+                booking=booking,
             )
+        else:
+            rating = int(request.form.get("rating"))
+
+            result = Query(
+                "bookings", check_attrs={"id": id}, other_attrs={"rating": rating}
+            ).call_update_query()
+
+            if result == "Success":
+                response = requests.get(
+                    request.host_url.strip("/")
+                    + url_for("get_show", id=booking["show_id"])
+                )
+
+                show = json.loads(response.text)
+
+                new_rating_count = show["rating_count"] + 1
+                new_rating = (
+                    show["rating"] * show["rating_count"] + rating
+                ) / new_rating_count
+
+                show_result = Query(
+                    "shows",
+                    check_attrs={"id": booking["show_id"]},
+                    other_attrs={
+                        "rating": new_rating,
+                        "rating_count": new_rating_count,
+                    },
+                ).call_update_query()
+
+                if show_result == "Success":
+                    return redirect(url_for("show_bookings"))
+
+            abort(500)
     else:
         return render_template("login.html", error="Please Log-in to continue")
