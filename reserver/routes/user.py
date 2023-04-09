@@ -80,6 +80,7 @@ def book_show():
                 other_attrs={
                     "show_id": id,
                     "user_id": userid,
+                    "show_name": show["name"],
                     "price": price,
                     "booked_seats": booked_seats,
                 },

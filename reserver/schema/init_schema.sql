@@ -45,6 +45,7 @@ DROP TABLE IF EXISTS bookings;
 CREATE TABLE bookings (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     show_id INTEGER NOT NULL,
+    show_name VARCHAR NOT NULL,
     rating INTEGER, 
     user_id INTEGER NOT NULL,
     price INTEGER NOT NULL,
