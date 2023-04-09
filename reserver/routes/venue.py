@@ -5,12 +5,15 @@ from reserver.db_methods import query_db, Query
 
 
 class Venue:
-    def __init__(self, capacity, place, location, name=None, id=None) -> None:
+    def __init__(
+        self, capacity, place, location, multiplier=100, name=None, id=None
+    ) -> None:
         if name:
             self.name = name
         self.capacity = capacity
         self.place = place
         self.location = location
+        self.multiplier = multiplier
         if id:
             self.id = id
 
@@ -77,6 +80,7 @@ def create_venue(venue: Venue):
                 "capacity": venue.capacity,
                 "place": venue.place,
                 "location": venue.location,
+                "multiplier": venue.multiplier,
             },
         ).call_insert_query()
         return status
@@ -100,6 +104,7 @@ def edit_venue(venue: Venue):
                 "capacity": venue.capacity,
                 "place": venue.place,
                 "location": venue.location,
+                "multiplier": venue.multiplier,
             },
             check_attrs={"id": venue.id},
         ).call_update_query()

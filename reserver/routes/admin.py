@@ -64,6 +64,7 @@ def admin_manage_venue():
                     place = request.form["place"]
                     capacity = int(request.form["capacity"])
                     location = request.form["location"]
+                    multiplier = int(request.form["multiplier"])
                 except ValueError:
                     error = "Invalid Values"
                     break

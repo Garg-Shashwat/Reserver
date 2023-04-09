@@ -63,6 +63,11 @@
             <label for="capacity">Capacity:</label>
             <input type="number" class="form-control" id="capacity" name="capacity" value="{{venue.capacity}}" required>
           </div>
+          <div class="form-group">
+            <label for="multiplier">Multiplier (100 is x1.00):</label>
+            <input type="number" class="form-control" id="multiplier" name="multiplier" value="{{venue.multiplier}}"
+              required>
+          </div>
           <input type="hidden" value="{{venue.id}}" name="id">
           {% else %}
           <div class="form-group">
@@ -80,6 +85,10 @@
           <div class="form-group">
             <label for="capacity">Capacity:</label>
             <input type="number" class="form-control" id="capacity" name="capacity" required>
+          </div>
+          <div class="form-group">
+            <label for="multiplier">Multiplier (100 is x1.00):</label>
+            <input type="number" class="form-control" id="multiplier" name="multiplier" required>
           </div>
           {% endif %}
           <input type="hidden" value="{{type}}" name="type">
