@@ -3,8 +3,8 @@
 ----------
 ### **Installation**
 Required Package:
-Flask: 2.2
-MatplotLib: 3.7.1
+Flask: 2.2,
+MatplotLib: 3.7.1,
 Requests: 2.28.2
 ```
 pip install flask==2.2
