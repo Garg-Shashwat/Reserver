@@ -93,7 +93,7 @@ def book_show():
             print(result)
             print(show_result)
             if result == "Success":
-                pass
+                return render_template("booking_success.html")
             else:
                 abort(500)
     else:
