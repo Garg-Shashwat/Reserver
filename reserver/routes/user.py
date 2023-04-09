@@ -93,7 +93,7 @@ def book_show():
             print(result)
             print(show_result)
             if result == "Success":
-                return render_template("booking_success.html")
+                return render_template("booking_success.html", name=session["username"])
             else:
                 abort(500)
     else:
